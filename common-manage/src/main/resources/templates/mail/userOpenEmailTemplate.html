@@ -1,0 +1,131 @@
+<!--
+  ~ <<
+  ~  Davinci
+  ~  ==
+  ~  Copyright (C) 2016 - 2019 EDP
+  ~  ==
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~  >>
+  ~
+  -->
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta content="email=no" name="format-detection" />
+    <title>Title</title>
+    <style>
+        html,body,div,header,h2,article,button,p {
+            margin: 0; padding: 0;
+        }
+        html,body{
+            height: 100%;
+            width: 100%;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            background-color: #EAEDF1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .wrapper {
+            width: 420px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        .header-style{
+            flex:0;
+            background-color: #1B98E0;
+            border-radius: 2px 2px 0 0;
+            line-height: 56px;
+            height: 56px;
+            color: #fff;
+        }
+        .article-style {
+            background-color: #fff;
+            border-radius: 0 0 2px 2px;
+            padding: 32px;
+        }
+        .title {
+            color: #555555;
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 28px;
+            margin-bottom: 60px;
+        }
+        .sure{
+            align-items: center;
+            margin: 32px auto;
+            justify-content: center;
+            font-size: 16px;
+            outline: none;
+            display: flex;
+            width: 80px;
+            vertical-align: center;
+            height: 30px;
+            padding: 8px 48px;
+            border-radius: 4px 4px;
+            background-color: #1B98E0;
+            color: #fff;
+            cursor: pointer;
+            text-decoration:none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .normal-style{
+            margin-bottom: 20px;
+            color: #555555;
+            display: flex;
+            padding-left: 10px;
+            text-align: left;
+            text-decoration:none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+        <div class="header-style" style="background-color: #1B98E0; height: 56px; line-height: 56px;">
+            <h2 style="color: #ffffff">欢迎使用数据开放平台</h2>
+        </div>
+        <div class="article-style" style="background-color: #FFFFFF">
+            <div class="title">开放平台 账号已开通成功</div>
+            <div class="normal-style">你好&emsp;<span th:text="${username}">username</span></div>
+            <div class="normal-style">恭喜! 您的账号已开通，账号信息如下:</div>
+            <div class="normal-style">名称&emsp;&emsp;：<span th:text="${username}">username</span></div>
+            <div class="normal-style">邮箱&emsp;&emsp;：<span th:text="${email}">email</span></div>
+            <div class="normal-style">密码&emsp;&emsp;：<span th:text="${password}">password</span></div>
+            <div class="normal-style">开通时间：<span th:text="${openDate}">openDate</span></div>
+            <div class="normal-style">现在，您可以申请自己需要的API了。期待听到您的使用反馈！
+            </div>
+            <a class="sure" th:href="@{${host}}">开始使用</a>
+            <div class="normal-style">大数据 团队</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

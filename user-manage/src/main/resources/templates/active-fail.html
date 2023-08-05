@@ -1,0 +1,127 @@
+<!--
+  ~ <<
+  ~  Davinci
+  ~  ==
+  ~  Copyright (C) 2016 - 2019 EDP
+  ~  ==
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~  >>
+  ~
+  -->
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta content="email=no" name="format-detection" />
+    <title>数据开放平台</title>
+    <style>
+        html,body,div,header,h2,article,button,p {
+            margin: 0; padding: 0;
+        }
+        html,body{
+            height: 100%;
+            width: 100%;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            background-color: #EAEDF1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .wrapper {
+            width: 420px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        header{
+            flex:0;
+            background-color: #1B98E0;
+            border-radius: 2px 2px 0 0;
+            line-height: 56px;
+            height: 56px;
+            color: #fff;
+        }
+        article {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 0 0 2px 2px;
+            padding: 32px;
+        }
+        .title {
+            color: #444444;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .sure{
+            font-size: 16px;
+            outline: none;
+            display: inline-block;
+            margin-bottom: 32px;
+            padding: 8px 48px;
+            border-radius: 4px 4px;
+            background-color: #1B98E0;
+            color: #fff;
+            cursor: pointer;
+            text-decoration:none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+
+    <!-- 引入jquery文件 -->
+    <script type="text/javascript" src="js/jquery-1.12.2.min.js"></script>
+
+    <!-- 第一种方式 -->
+    <script type="text/javascript" th:inline="javascript">
+        var interval;
+
+        $(function(){
+            interval = window.setInterval("changeSecond()", 1000);// 设置定时器，每隔1秒，执行一次changeSecond()方法
+        });
+
+        function changeSecond() {
+            var second = $("#seconds").text();
+            second = second - 1;
+            if(second === 0) {
+                // 清除定时器
+                window.clearInterval(interval);
+                window.location.href = [[${path}]];
+                return;
+            }
+            $("#seconds").text(second);
+        }
+    </script>
+
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+        <header>
+            <h2>激活失败，失败原因:<span th:text="${errorMsg}"></span>，<span id="seconds">5</span>秒后自动为您跳转回首页</h2>
+        </header>
+        <article>
+            <a class="sure" th:href="${path}">去首页</a>
+        </article>
+    </div>
+</div>
+</body>
+</html>

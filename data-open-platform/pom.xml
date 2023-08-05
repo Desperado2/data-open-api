@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.desperado2</groupId>
+        <artifactId>data-open-api</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>data-open-platform</artifactId>
+    <name>data-open-platform</name>
+    <description>data-open-api</description>
+
+
+    <properties>
+        <java.version>8</java.version>
+        <output.dependence.file.path>lib/</output.dependence.file.path>
+        <output.jar.file.path>bin/</output.jar.file.path>
+        <outut.resource.file.path>config/</outut.resource.file.path>
+        <output.front.file.path>ui/</output.front.file.path>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>user-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>api-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>log-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>security-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>datasource-manage</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>cache-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>udf-manage</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>log-manage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.desperado2</groupId>
+            <artifactId>data-open-api-ui</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <excludes>
+                    <exclude>*.yaml</exclude>
+                    <exclude>*.xml</exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>open-data-platform</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                    <configuration>
+                        <finalName>open-data-platform</finalName>
+                        <descriptors>
+                            <descriptor>src/main/assembly/data-open-platform-bin.xml</descriptor>
+                        </descriptors>
+                        <appendAssemblyId>false</appendAssemblyId>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+    </build>
+
+</project>
