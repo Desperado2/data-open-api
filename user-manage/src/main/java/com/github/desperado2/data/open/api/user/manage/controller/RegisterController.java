@@ -38,13 +38,5 @@ public class RegisterController {
         registerService.register(userRegisterModel);
         return new DataResult<>();
     }
-//
-//    @GetMapping("/active/{token}")
-//    @ResponseBody
-//    @ApiOperation(value = "激活", notes = "[激活]")
-//    public DataResult<Void> active(@PathVariable("token") String token, HttpServletRequest request) throws  DataOpenPlatformException {
-//        registerService.activateUserNoLogin(token, request);
-//        return new DataResult<>();
-//    }
 
 }

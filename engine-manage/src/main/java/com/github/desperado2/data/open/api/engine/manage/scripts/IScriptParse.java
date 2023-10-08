@@ -7,6 +7,7 @@ import com.github.desperado2.data.open.api.common.manage.enums.ExternalResultCod
 import com.github.desperado2.data.open.api.common.manage.exception.ExternalException;
 import com.github.desperado2.data.open.api.datasource.manage.datasource.DataSourceDialect;
 import com.github.desperado2.data.open.api.datasource.manage.datasource.DataSourceManager;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public interface IScriptParse {
 
-    Object runScript(ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable;
+    Object runScript(ExecuteType executeType, ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable;
 
     Object engineEval(String script, Bindings bindings) throws Throwable;
 

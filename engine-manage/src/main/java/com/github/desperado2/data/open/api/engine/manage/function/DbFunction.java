@@ -16,7 +16,10 @@ import com.github.desperado2.data.open.api.engine.manage.ApiInfoContent;
 import com.github.desperado2.data.open.api.engine.manage.datamasking.DataMaskingEnum;
 import com.github.desperado2.data.open.api.engine.manage.datamasking.DataMaskingExecutor;
 import com.github.desperado2.data.open.api.engine.manage.datamasking.IDataMaskingService;
+import com.github.desperado2.data.open.api.engine.manage.function.IFunction;
+import com.github.desperado2.data.open.api.engine.manage.function.LockFunction;
 import com.github.desperado2.data.open.api.engine.manage.interceptor.ISQLInterceptor;
+import com.github.desperado2.data.open.api.engine.manage.model.CacheParams;
 import com.github.desperado2.data.open.api.engine.manage.model.MaskParams;
 import com.github.desperado2.data.open.api.engine.manage.model.PageList;
 import com.github.desperado2.data.open.api.engine.manage.scripts.ScriptParseService;
@@ -25,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -55,12 +57,6 @@ public class DbFunction implements IFunction {
     @Autowired
     private IDBCache dbCache;
 
-    @Value("${open.data.platform.base.db-cache-timeout:60}")
-    private Long cacheTime;
-
-    @Value("${open.data.platform.base.db-cache-open:false}")
-    private Boolean openCache;
-
     @Autowired
     private DataMaskingExecutor dataMaskingExecutor;
 
@@ -82,6 +78,18 @@ public class DbFunction implements IFunction {
     public Long count(String script) throws Exception {
         String datasourceCode = getDatasourceCode(apiInfoContent.getApiExecuteEnvironmentEnum());
         return count(datasourceCode, script);
+    }
+
+    /**
+     * 查询数量
+     * @param script SQL脚本
+     * @return 数据
+     * @throws Exception SQL执行异常
+     */
+    public Long pageCount(String script) throws Exception {
+        String countSQL = MyBatisUtils.getCountSQL(script);
+        String datasourceCode = getDatasourceCode(apiInfoContent.getApiExecuteEnvironmentEnum());
+        return count(datasourceCode, countSQL);
     }
 
     /**
@@ -171,7 +179,9 @@ public class DbFunction implements IFunction {
         LinkedHashMap<String, Object> sqlParam = getSqlParam(script);
         String cacheKey = null;
         List<Map> result = null;
-        if(openCache){
+        CacheParams cacheParams = parseCacheParams();
+        Boolean isLocalTest = apiInfoContent.getIsLocalTest();
+        if(!isLocalTest && cacheParams.getEnableCache() && cacheParams.getCacheValidity() > 0){
             // 走缓存
             cacheKey = getCacheKey(dataSourceCode, sqlParam, script,null, null);
             Object cacheData = queryCache(cacheKey);
@@ -183,9 +193,9 @@ public class DbFunction implements IFunction {
             // 走数据库
             result = realQueryFromDatabase(dataSourceCode,script, sqlParam);
         }finally {
-            if(openCache){
+            if(!isLocalTest && cacheParams.getEnableCache() && cacheParams.getCacheValidity() > 0){
                 if(result != null){
-                    dbCache.set(cacheKey, result, cacheTime);
+                    dbCache.set(cacheKey, result, cacheParams.getCacheValidity());
                 }
                 lockFunction.peek(cacheKey);
             }
@@ -273,7 +283,9 @@ public class DbFunction implements IFunction {
         LinkedHashMap<String, Object> sqlParam = getSqlParam(script);
         String cacheKey = null;
         List<Map> result = null;
-        if(openCache){
+        Boolean isLocalTest = apiInfoContent.getIsLocalTest();
+        CacheParams cacheParams = parseCacheParams();
+        if(!isLocalTest && cacheParams.getEnableCache() && cacheParams.getCacheValidity() > 0){
             // 走缓存
             cacheKey = getCacheKey(dataSourceCode,sqlParam, script, page, pageSize);
             Object cacheData = queryCache(cacheKey);
@@ -283,17 +295,20 @@ public class DbFunction implements IFunction {
         }
         PageList pageList = new PageList(page, pageSize);
         try {
+            DataSourceDialect dataSourceDialect = dataSourceManager.getDialectMap().get(dataSourceCode);
             // 查询count
-            Long count = count(script);
+            Long count = pageCount(script);
+            pageList.setTotalSize(count.intValue());
             // 判断是否还有值
             if(count > pageList.getOffset()){
+                script = script + dataSourceDialect.getLimitSql(page, pageSize);
                 result = realQueryFromDatabase(dataSourceCode,script, sqlParam);
                 pageList.setDataList(result);
             }
         }finally {
-            if(openCache){
+            if(!isLocalTest && cacheParams.getEnableCache() && cacheParams.getCacheValidity() > 0){
                 if(result != null){
-                    dbCache.set(cacheKey, pageList, cacheTime);
+                    dbCache.set(cacheKey, pageList, cacheParams.getCacheValidity());
                 }
                 lockFunction.peek(cacheKey);
             }
@@ -365,16 +380,22 @@ public class DbFunction implements IFunction {
         LinkedHashMap<String, Object> sqlParma = new LinkedHashMap<>();
         // 请求参数
         if(apiInfoContent.getRequestParams() != null){
-            for (Object key : apiInfoContent.getRequestParams().entrySet()) {
+            for (Object key : apiInfoContent.getRequestParams().keySet()) {
                 if(parameterMappingList.contains(key.toString())){
+                    sqlParma.put(key.toString(), apiInfoContent.getRequestParams().get(key));
+                }else if(script.contains(key.toString())){
                     sqlParma.put(key.toString(), apiInfoContent.getRequestParams().get(key));
                 }
             }
         }
+
+
         // SQL 绑定参数
         if(apiInfoContent.getDbParamBinds() != null){
             for (Map.Entry<String, Object> entry : apiInfoContent.getDbParamBinds().entrySet()) {
                 if(parameterMappingList.contains(entry.getKey())){
+                    sqlParma.put(entry.getKey(), entry.getValue());
+                }else if(script.contains(entry.getKey())){
                     sqlParma.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -423,5 +444,27 @@ public class DbFunction implements IFunction {
                 .forEachOrdered(x -> result.put(x.getKey(), x.getValue()));
         String key = StringUtils.join(Arrays.asList(result.entrySet().stream().map(it -> it.getKey() + "=" + String.valueOf(it.getValue())).toArray()),"&");
         return Md5Encrypt.md5Hexdigest(key, "utf-8");
+    }
+
+    /**
+     * 解析缓存参数
+     * @return 缓存参数
+     */
+    private CacheParams parseCacheParams(){
+        if(apiInfoContent.getApiInfo() == null){
+            return new CacheParams(false, 0L);
+        }
+        JSONObject optionData = apiInfoContent.getApiInfo().getOptionData();
+        if(optionData == null){
+            return new CacheParams(false, 0L);
+        }
+        CacheParams cacheParams = new CacheParams(false, 120L);
+        if(optionData.containsKey("enableCache")){
+            cacheParams.setEnableCache(optionData.getBoolean("enableCache"));
+        }
+        if(optionData.containsKey("cacheValidity")){
+            cacheParams.setCacheValidity(optionData.getLong("cacheValidity"));
+        }
+        return cacheParams;
     }
 }

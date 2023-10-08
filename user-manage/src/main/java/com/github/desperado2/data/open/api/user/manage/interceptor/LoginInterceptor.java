@@ -117,9 +117,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     /**
      * 刷新cookie
      *
-     * @param request
-     * @param response
-     * @param tokenTimeout
+     * @param request 请求
+     * @param response 响应
+     * @param tokenTimeout token超时时长
      */
     private void refreshCookie(HttpServletRequest request, HttpServletResponse response, Long tokenTimeout) {
         // 获取Cookies数组

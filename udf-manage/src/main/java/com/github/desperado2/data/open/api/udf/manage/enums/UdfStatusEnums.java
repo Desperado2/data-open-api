@@ -41,13 +41,4 @@ public enum UdfStatusEnums {
     public String getName() {
         return name;
     }
-
-    public static boolean isExist(Integer code){
-        for (UdfStatusEnums value : values()) {
-            if(value.code.equals(code)){
-                return true;
-            }
-        }
-        return false;
-    }
 }

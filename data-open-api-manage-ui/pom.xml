@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  <version>1.0.0</version>
+  <parent>
+		<groupId>com.github.desperado2</groupId>
+		<artifactId>data-open-api</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+
+	<artifactId>data-open-api-manage-ui</artifactId>
+	<name>data-open-api-ui</name>
+	<description>data-open-api-ui</description>
+
+	<properties>
+		<node.version>v16.13.1</node.version>
+		<npm.version>v6.32.6</npm.version>
+		<sonar.sources>src</sonar.sources>
+		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
+	</properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.9.1</version>
+        <configuration>
+          <nodeVersion>v10.16.0</nodeVersion>
+          <npmVersion>6.9.0</npmVersion>
+<!--          <nodeDownloadRoot>http://npm.taobao.org/mirrors/node/</nodeDownloadRoot>-->
+<!--          <npmRegistryURL>https://registry.npm.taobao.org</npmRegistryURL>-->
+<!--          <workingDirectory>../tjWeb</workingDirectory>-->
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm run build</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build:prod</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>copy-frontend</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/../data-open-api/target/classes/static</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/dist</directory>
+                  <includes>
+                    <include>**/*.js</include>
+                    <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.jpeg</include>
+                    <include>**/*.woff</include>
+                    <include>**/*.tff</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-frontend-html</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/../data-open-api/target/classes/template</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/dist</directory>
+                  <includes>
+                    <include>**/*.ico</include>
+                    <include>**/*.html</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

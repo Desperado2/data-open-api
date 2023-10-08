@@ -70,10 +70,10 @@ public class DefaultLogCache implements ILogCache {
     }
 
     @Override
-    public void remove(ApiLogsCache apiLogsCache) {
+    public ApiLogsCache remove(ApiLogsCache apiLogsCache) {
         synchronized (this){
-            apiLogCache.remove(buildKey(apiLogsCache));
             expiresTime.remove(buildKey(apiLogsCache));
+            return apiLogCache.remove(buildKey(apiLogsCache));
         }
     }
 

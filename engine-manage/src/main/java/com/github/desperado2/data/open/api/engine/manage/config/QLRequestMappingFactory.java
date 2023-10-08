@@ -13,6 +13,7 @@ import com.github.desperado2.data.open.api.common.manage.exception.DataOpenPlatf
 import com.github.desperado2.data.open.api.common.manage.utils.RequestUtils;
 import com.github.desperado2.data.open.api.engine.manage.ApiInfoContent;
 import com.github.desperado2.data.open.api.engine.manage.encrypt.IScriptEncrypt;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import com.github.desperado2.data.open.api.engine.manage.model.IgnoreWrapper;
 import com.github.desperado2.data.open.api.engine.manage.result.IResultWrapper;
@@ -42,7 +43,7 @@ import java.util.Map;
 /**
  * 将存储的API注册为request mapping，并且提供对入参及存储的执行脚本进行解析。
  * 输出解析后的最终脚本提供给脚本执行器，然后对结果进行封装返回
- * @author tu nan
+ * @author mujingjing
  * @date 2023/3/13
  **/
 @Component
@@ -124,11 +125,11 @@ public class QLRequestMappingFactory {
             Object data = null;
             ApiExecuteEnvironmentEnum environment = getEnvironmentByPath(executeEnv);
             if(ScriptTypeEnum.GROOVY.getCode().equals(apiInfo.getType())){
-                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(environment, script, apiInfo, apiParams);
+                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(ExecuteType.EXTERNAL,environment, script, apiInfo, apiParams);
             }else if(ScriptTypeEnum.SQL.getCode().equals(apiInfo.getType())){
-                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(environment, script, apiInfo, apiParams);
+                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(ExecuteType.EXTERNAL, environment, script, apiInfo, apiParams);
             }else if(ScriptTypeEnum.JAVASCRIPT.getCode().equals(apiInfo.getType())){
-                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(environment, script, apiInfo, apiParams);
+                data = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(ExecuteType.EXTERNAL, environment, script, apiInfo, apiParams);
             }else{
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_JSON_UTF8)

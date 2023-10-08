@@ -48,7 +48,7 @@ public class DingtalkSendService {
         String signResult = "&timestamp=" + timestamp + "&sign=" + sign;
         // 得到拼接后的 URL
         String baseUrl = "https://oapi.dingtalk.com/robot/send?access_token=";
-        String url = baseUrl + dingtalkConfig.getTokenId() + signResult;
+        String url = baseUrl + dingtalkConfig.getAccessToken() + signResult;
         DingTalkClient client = new DefaultDingTalkClient(url);
         OapiRobotSendResponse response = client.execute(buildRequest(content, messageTypeEnums));
         logger.debug("dingding robot msg send response:" + response.isSuccess());

@@ -1,13 +1,11 @@
 package com.github.desperado2.data.open.api.engine.manage.scripts.javascript;//package com.github.desperado2.open.data.platform.api.manage.extend.scripts;
 
-/**
- * js脚本执行器
- */
 
 import com.github.desperado2.data.open.api.cache.manage.model.ApiInfo;
 import com.github.desperado2.data.open.api.common.manage.enums.ApiExecuteEnvironmentEnum;
 import com.github.desperado2.data.open.api.common.manage.exception.DataOpenPlatformException;
 import com.github.desperado2.data.open.api.engine.manage.ApiInfoContent;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.function.IFunction;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import com.github.desperado2.data.open.api.engine.manage.scripts.IScriptParse;
@@ -27,6 +25,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+
+
+/**
+ * js脚本执行器
+ */
 @Service("javaScriptScriptExecutor")
 public class JavaScriptScriptParse implements IScriptParse {
 
@@ -46,9 +49,10 @@ public class JavaScriptScriptParse implements IScriptParse {
 
     @Override
     @Transactional
-    public Object runScript(ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
+    public Object runScript(ExecuteType executeType, ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
         try {
             //注入变量
+            apiInfoContent.setIsLocalTest(ExecuteType.SYS == executeType);
             boolean safe = KeywordCheckUtils.isSafeJavScriptScript(script);
             if(!safe){
                throw new DataOpenPlatformException("脚本检测为恶意脚本");

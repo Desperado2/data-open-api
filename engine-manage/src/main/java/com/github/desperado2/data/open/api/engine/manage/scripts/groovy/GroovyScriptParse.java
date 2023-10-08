@@ -3,6 +3,7 @@ package com.github.desperado2.data.open.api.engine.manage.scripts.groovy;//packa
 import com.github.desperado2.data.open.api.cache.manage.model.ApiInfo;
 import com.github.desperado2.data.open.api.common.manage.enums.ApiExecuteEnvironmentEnum;
 import com.github.desperado2.data.open.api.engine.manage.ApiInfoContent;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.function.IFunction;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import com.github.desperado2.data.open.api.engine.manage.scripts.IScriptParse;
@@ -44,8 +45,6 @@ public class GroovyScriptParse implements IScriptParse {
     private ApplicationContext context;
 
     private Collection<IFunction> functionList;
-
-    private ScriptEngineManager factory = new ScriptEngineManager();
 
     private ScriptEngine engine = null;
 
@@ -98,18 +97,17 @@ public class GroovyScriptParse implements IScriptParse {
         ));
         config.addCompilationCustomizers(new ASTTransformationCustomizer(timeoutArgs, ConditionalInterrupt.class));
         // 沙盒环境
-//        config.addCompilationCustomizers(new SandboxTransformer());
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(this.getClass().getClassLoader(), config);
         engine = new GroovyScriptEngineImpl(groovyClassLoader);
-//        new GroovyNotSupportInterceptor().register();
         //加载函数
         functionList = context.getBeansOfType(IFunction.class).values();
     }
 
     @Override
-    public Object runScript(ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
+    public Object runScript(ExecuteType executeType, ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
         try {
             //注入变量
+            apiInfoContent.setIsLocalTest(ExecuteType.SYS == executeType);
             apiInfoContent.setApiInfo(apiInfo);
             apiInfoContent.setApiParams(apiParams);
             Bindings bindings = new SimpleBindings();

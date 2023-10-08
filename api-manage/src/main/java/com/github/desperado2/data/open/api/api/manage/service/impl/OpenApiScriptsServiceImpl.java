@@ -22,6 +22,7 @@ import com.github.desperado2.data.open.api.common.manage.enums.ScriptTypeEnum;
 import com.github.desperado2.data.open.api.common.manage.exception.DataOpenPlatformException;
 import com.github.desperado2.data.open.api.common.manage.model.BaseUserModel;
 import com.github.desperado2.data.open.api.common.manage.utils.BeanUtil;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import com.github.desperado2.data.open.api.engine.manage.result.DefaultResultWrapper;
 import com.github.desperado2.data.open.api.engine.manage.scripts.ScriptExecutor;
@@ -99,11 +100,6 @@ public class OpenApiScriptsServiceImpl extends ServiceImpl<OpenApiScriptsMapper,
 
     @Override
     public OpenApiScriptsRequest getByApiId(Long id) throws DataOpenPlatformException {
-//        BaseUserModel loginUserInfo = userInfoProvider.getLoginUserInfo();
-//        String roleCode = loginUserInfo.getRoleCode();
-//        if(!RoleCodeEnum.ADMIN.getCode().equals(roleCode)){
-//            throw new DataOpenPlatformException(ErrorCodeEnum.ACCESS_FORBIDDEN.getErrorMessage(), ErrorCodeEnum.ACCESS_FORBIDDEN.getHttpCode());
-//        }
         OpenApiScripts openApiScripts = this.getBaseMapper().selectOne(new LambdaQueryWrapper<OpenApiScripts>()
                 .eq(OpenApiScripts::getApiId, id).last(" limit 1"));
         OpenApiScriptsRequest openApiScriptsRequest = null;
@@ -156,18 +152,17 @@ public class OpenApiScriptsServiceImpl extends ServiceImpl<OpenApiScriptsMapper,
             ApiExecuteEnvironmentEnum environment = getEnvironmentByPath(executeEnv);
             ApiParams apiParams = ApiParams.builder().param(apiRequestBody).build();
             if(ScriptTypeEnum.GROOVY.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(environment, apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(ExecuteType.SYS ,environment, apiScript, apiInfo, apiParams);
             }else if(ScriptTypeEnum.SQL.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(environment, apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(ExecuteType.SYS ,environment, apiScript, apiInfo, apiParams);
             }else if(ScriptTypeEnum.JAVASCRIPT.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(environment, apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(ExecuteType.SYS ,environment, apiScript, apiInfo, apiParams);
             }else {
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .body(new DefaultResultWrapper().throwable(new Throwable("无效的执行引擎"), null,null, null));
             }
 
-            // List<Map<String, Object>> mapList = dialect.find(new ScriptContext(new StringBuilder().append(apiScript), params, dialect));
             if(ApiCustomResponseStructureEnum.OPEN.getCode().equals(customResultStructure)){
                 JSONObject apiResponseFormat = openApiScripts.getApiResponseFormat();
                 return ResponseEntity.ok()
@@ -225,11 +220,11 @@ public class OpenApiScriptsServiceImpl extends ServiceImpl<OpenApiScriptsMapper,
             ApiExecuteEnvironmentEnum environment = getEnvironmentByPath(executeEnv);
             ApiParams apiParams = ApiParams.builder().param(jsonObject).build();
             if(ScriptTypeEnum.GROOVY.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(environment,apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.GROOVY).runScript(ExecuteType.SYS ,environment,apiScript, apiInfo, apiParams);
             }else if(ScriptTypeEnum.SQL.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(environment, apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.SQL).runScript(ExecuteType.SYS ,environment, apiScript, apiInfo, apiParams);
             }else if(ScriptTypeEnum.JAVASCRIPT.getCode().equals(openApiScripts.getApiScriptType())){
-                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(environment, apiScript, apiInfo, apiParams);
+                mapList = scriptExecutor.getScriptExecutor(ScriptTypeEnum.JAVASCRIPT).runScript(ExecuteType.SYS ,environment, apiScript, apiInfo, apiParams);
             }else {
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_JSON_UTF8)

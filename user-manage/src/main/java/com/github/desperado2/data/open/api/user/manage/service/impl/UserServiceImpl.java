@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     private final UserConfig userConfig;
 
+    final static Pattern EMAIL_PARTERN = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
 
     public UserServiceImpl(IRoleService roleService, AlertService alertService, UserInfoProvider userInfoProvider, UserConfig userConfig) {
         this.roleService = roleService;
@@ -63,10 +65,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 填充数据
         String email = updateRoleModel.getEmail();
         // 判断邮箱是否合法
-        if(userConfig.getEmailSuffix() != null){
-            if(Arrays.stream(userConfig.getEmailSuffix().split(",")).noneMatch(it -> email.endsWith(it.trim()))){
-                throw new DataOpenPlatformException("不支持的邮箱,支持的邮箱后缀为:"+ userConfig.getEmailSuffix());
-            }
+        if(EMAIL_PARTERN.matcher(email).matches()){
+            throw new DataOpenPlatformException("邮箱格式不正确");
         }
         // 判断邮箱是否存在
         User existUser = selectByEmail(email);

@@ -18,6 +18,4 @@ public interface UdfDefinitionMapper extends BaseMapper<UdfDefinition> {
 
     @Select("select id, name, type from t_udf_definition where status = 0")
     List<UdfDefinition> getTypeList();
-
-    void updateById(Long id);
 }

@@ -41,19 +41,4 @@ public enum UserStatusEnum {
         return name;
     }
 
-
-    /**
-     * 判断枚举状态是否存在
-     * @param code 状态码code
-     * @return true存在，false不存在
-     */
-    public static boolean isExist(Integer code){
-        UserStatusEnum[] values = UserStatusEnum.values();
-        for (UserStatusEnum value : values) {
-            if(value.getCode().equals(code)){
-                return true;
-            }
-        }
-        return false;
-    }
 }

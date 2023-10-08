@@ -114,7 +114,7 @@ public class LogEventListener implements ApplicationListener<LogEvent> {
         if(StringUtils.isBlank(logKey)){
             return;
         }
-        ApiLogsCache apiLogsCache = logCache.get(ApiLogsCache.Builder.builder().logKey(logKey).build());
+        ApiLogsCache apiLogsCache = logCache.remove(ApiLogsCache.Builder.builder().logKey(logKey).build());
         ApiLogs apiLogs = null;
         if(apiLogsCache != null){
             apiLogs = BeanUtil.sourceToTarget(apiLogsCache, ApiLogs.class);

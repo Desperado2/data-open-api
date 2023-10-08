@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * 注册服务
@@ -32,7 +33,6 @@ import java.util.Locale;
 
 @Service
 public class RegisterServiceImpl extends AbstractBaseLockService implements IRegisterService {
-
 
 
     private static final CheckEntityEnum entity = CheckEntityEnum.USER;
@@ -49,6 +49,9 @@ public class RegisterServiceImpl extends AbstractBaseLockService implements IReg
 
     private final OpenApiProperties openApiProperties;
 
+    final static Pattern EMAIL_PARTERN = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
+
+
     public RegisterServiceImpl(SendEMailUtils sendEMailUtils, IUserService userService, ServerUtils serverUtils, IKeySecretService keySecretService, UserConfig userConfig, OpenApiProperties openApiProperties) {
         this.sendEMailUtils = sendEMailUtils;
         this.userService = userService;
@@ -64,10 +67,8 @@ public class RegisterServiceImpl extends AbstractBaseLockService implements IReg
         // 注册逻辑
         String email = userRegisterModel.getEmail();
         // 判断邮箱是否合法
-        if(userConfig.getEmailSuffix() != null){
-            if(Arrays.stream(userConfig.getEmailSuffix().split(",")).noneMatch(it -> email.endsWith(it.trim()))){
-                throw new DataOpenPlatformException("不支持的邮箱,支持的邮箱后缀为:"+ userConfig.getEmailSuffix());
-            }
+        if(EMAIL_PARTERN.matcher(email).matches()){
+            throw new DataOpenPlatformException("邮箱格式不正确");
         }
         // 判断密码是否合法
         PasswordCheckUtils.CheckResult check = PasswordCheckUtils.check(userRegisterModel.getPassword());
@@ -95,8 +96,6 @@ public class RegisterServiceImpl extends AbstractBaseLockService implements IReg
             user.setName(genUsername(userRegisterModel.getName()));
             // 添加用户
             userService.saveUser(user);
-            // 发送激活邮件
-            //sendMail(user);
         }finally {
             releaseLock(emailLock);
         }
@@ -136,7 +135,7 @@ public class RegisterServiceImpl extends AbstractBaseLockService implements IReg
                 // 密码相同  激活
                userService.activeUser(user);
                // 生成对接秘钥信息
-                keySecretService.generateKeySecret(user.getId());
+               keySecretService.generateKeySecret(user.getId());
             }else{
                 throw new DataOpenPlatformException("无效的token");
             }
@@ -155,12 +154,6 @@ public class RegisterServiceImpl extends AbstractBaseLockService implements IReg
         if(!user.getStatus().equals(UserStatusEnum.NOT_ACTIVATED.getCode())){
             throw new DataOpenPlatformException("该用户已激活，不需要去重新激活");
         }
-        // 获取激活锁
-//        BaseLock lock = LockFactory.getLock("ACTIVATE" + Constants.AT_SYMBOL + user.getEmail().toUpperCase(), 5, LockType.REDIS);
-//        if (!lock.getLock()) {
-//            throw new DataOpenPlatformException("当前用户正在激活中，请稍后再试");
-//        }
-        // 激活
         // 生成密码
         String password = generalPassword();
         // 密码加密

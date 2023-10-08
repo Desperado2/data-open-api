@@ -29,7 +29,7 @@ public interface ILogCache {
      * 移除缓存
      * @param apiLogsCache 缓存key
      */
-    void remove(ApiLogsCache apiLogsCache);
+    ApiLogsCache remove(ApiLogsCache apiLogsCache);
 
     /**
      * 移除所有缓存

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 认证信息
+ * 日志信息
  * @author tu nan
  * @date 2023/2/15
  **/

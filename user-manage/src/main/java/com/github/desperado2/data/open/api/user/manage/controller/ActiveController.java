@@ -24,11 +24,8 @@ public class ActiveController {
 
     private final IRegisterService registerService;
 
-    private final ServerUtils serverUtils;
-
-    public ActiveController(IRegisterService registerService, ServerUtils serverUtils) {
+    public ActiveController(IRegisterService registerService) {
         this.registerService = registerService;
-        this.serverUtils = serverUtils;
     }
 
 

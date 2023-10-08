@@ -27,7 +27,6 @@ import java.io.PrintWriter;
  * @date 2021/3/11
  **/
 @Component
-@WebFilter(urlPatterns = "open-api/new-search/v1/*",filterName = "HttpServletFilter")
 public class HttpServletResponseReplacedFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(HttpServletResponseReplacedFilter.class);
 
@@ -47,7 +46,6 @@ public class HttpServletResponseReplacedFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponseCopier responseWrapper = null;
         if(servletResponse instanceof HttpServletResponse){
-            //responseWrapper = new ResponseWrapper((HttpServletResponse) servletResponse);
             responseWrapper = new HttpServletResponseCopier((HttpServletResponse)servletResponse);
         }
 

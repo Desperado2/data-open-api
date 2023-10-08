@@ -57,7 +57,7 @@ public class Constants {
 
     public static final String SLASH = "/";
 
-    public static final String BASE_PATH = "/open-data-platform";
+    public static final String BASE_PATH = "/data-open-api";
 
     // 日志唯一key
     public static final String LOG_KEY = "logKey";

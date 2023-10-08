@@ -12,9 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserConfig {
 
-    @Value("${open.data.platform.user.email.suffix: null}")
-    private String emailSuffix;
-
     @Value("${open.data.platform.user.token.refresh-token-end-time: 1800}")
     private Long tokenRefreshTokenEndTime;
 
@@ -26,14 +23,6 @@ public class UserConfig {
 
     @Value("${open.data.platform.cookie.timeout: 7200}")
     private Long cookieTimeout;
-
-    public String getEmailSuffix() {
-        return emailSuffix;
-    }
-
-    public void setEmailSuffix(String emailSuffix) {
-        this.emailSuffix = emailSuffix;
-    }
 
     public Long getTokenRefreshTokenEndTime() {
         return tokenRefreshTokenEndTime;

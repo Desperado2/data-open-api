@@ -5,6 +5,7 @@ import com.github.desperado2.data.open.api.cache.manage.model.ApiInfo;
 import com.github.desperado2.data.open.api.common.manage.enums.ApiExecuteEnvironmentEnum;
 import com.github.desperado2.data.open.api.datasource.manage.datasource.DataSourceManager;
 import com.github.desperado2.data.open.api.engine.manage.ApiInfoContent;
+import com.github.desperado2.data.open.api.engine.manage.enums.ExecuteType;
 import com.github.desperado2.data.open.api.engine.manage.function.DbFunction;
 import com.github.desperado2.data.open.api.engine.manage.model.ApiParams;
 import com.github.desperado2.data.open.api.engine.manage.scripts.IScriptParse;
@@ -23,8 +24,6 @@ import javax.script.SimpleBindings;
 public class MyBatisScriptParse implements IScriptParse {
 
     @Autowired
-    private DataSourceManager dataSourceManager;
-    @Autowired
     private ApiInfoContent apiInfoContent;
 
     @Autowired
@@ -32,8 +31,9 @@ public class MyBatisScriptParse implements IScriptParse {
 
 
     @Override
-    public Object runScript(ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
+    public Object runScript(ExecuteType executeType,ApiExecuteEnvironmentEnum environmentEnum, String script, ApiInfo apiInfo, ApiParams apiParams) throws Throwable {
         //注入变量
+        apiInfoContent.setIsLocalTest(ExecuteType.SYS == executeType);
         apiInfoContent.setApiInfo(apiInfo);
         apiInfoContent.setApiParams(apiParams);
         Bindings bindings = new SimpleBindings();
@@ -41,7 +41,7 @@ public class MyBatisScriptParse implements IScriptParse {
         //注入属性变量
         apiInfoContent.setApiExecuteEnvironmentEnum(environmentEnum);
         apiInfoContent.setRequestParams(buildScriptParams(apiParams, bindings));
-        return dbFunction.selectOne(script);
+        return dbFunction.selectList(script);
     }
 
     @Override

@@ -83,10 +83,19 @@ public class ApiInfo {
      */
     private JSONObject responseFormat;
 
+    /**
+     * 其他参数
+     */
+
+    private JSONObject optionData;
+
     public ApiInfo() {
     }
 
-    public ApiInfo(Long id, String apiName, String path, String method, String options, String type, String name, String testDatasource, String preDatasource, String prodDatasource, Integer apiOnlineStatus, String script, String service, List<String> requestParamsList, JSONObject responseFormat) {
+    public ApiInfo(Long id, String apiName, String path, String method, String options, String type, String name,
+                   String testDatasource, String preDatasource, String prodDatasource, Integer apiOnlineStatus,
+                   String script, String service, List<String> requestParamsList, JSONObject responseFormat,
+                    JSONObject optionData) {
         this.id = id;
         this.apiName = apiName;
         this.path = path;
@@ -102,6 +111,7 @@ public class ApiInfo {
         this.service = service;
         this.requestParamsList = requestParamsList;
         this.responseFormat = responseFormat;
+        this.optionData = optionData;
     }
 
     public String getTestDatasource() {
@@ -136,6 +146,14 @@ public class ApiInfo {
         this.apiOnlineStatus = apiOnlineStatus;
     }
 
+    public JSONObject getOptionData() {
+        return optionData;
+    }
+
+    public void setOptionData(JSONObject optionData) {
+        this.optionData = optionData;
+    }
+
     private ApiInfo(Builder builder) {
         setId(builder.id);
         setApiName(builder.apiName);
@@ -152,6 +170,7 @@ public class ApiInfo {
         setService(builder.service);
         setRequestParamsList(builder.requestParamsList);
         setResponseFormat(builder.responseFormat);
+        setOptionData(builder.optionData);
     }
 
     public Long getId() {
@@ -258,6 +277,7 @@ public class ApiInfo {
         private String service;
         private List<String> requestParamsList;
         private JSONObject responseFormat;
+        private JSONObject optionData;
 
         private Builder() {
         }
@@ -335,6 +355,11 @@ public class ApiInfo {
 
         public Builder responseFormat(JSONObject val) {
             responseFormat = val;
+            return this;
+        }
+
+        public Builder optionData(JSONObject val) {
+            optionData = val;
             return this;
         }
 

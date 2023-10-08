@@ -327,13 +327,13 @@
         <module>log-manage</module>
         <module>authentication-manage</module>
         <module>common-manage</module>
-        <module>data-open-platform</module>
+        <module>data-open-api-manage</module>
         <module>datasource-manage</module>
         <module>cache-manage</module>
         <module>engine-manage</module>
         <module>lock-manage</module>
         <module>udf-manage</module>
-        <module>data-open-platform-ui</module>
+        <module>data-open-api-manage-ui</module>
     </modules>
 
 </project>

@@ -22,10 +22,10 @@ import java.util.Map;
 public class ApiInfoContent {
 
     private ThreadLocal<Boolean> isDebug = new InheritableThreadLocal<>();
+    private ThreadLocal<Boolean> isLocalTest = new InheritableThreadLocal<>();
     private ThreadLocal<ApiInfo> apiInfo = new InheritableThreadLocal<>();
     private ThreadLocal<ApiExecuteEnvironmentEnum> apiExecuteEnvironmentEnum = new InheritableThreadLocal<>();
     private ThreadLocal<ApiParams> apiParams = new InheritableThreadLocal<>();
-//    private ThreadLocal<OpenApiScriptsRelease> apiScript = new InheritableThreadLocal<>();
     private ThreadLocal<List<String>> logs = new InheritableThreadLocal<>();
     private ThreadLocal<Bindings> engineBindings = new InheritableThreadLocal<>();
     private ThreadLocal<Map> requestParams = new InheritableThreadLocal<>();
@@ -38,6 +38,13 @@ public class ApiInfoContent {
 
     public void setIsDebug(Boolean isDebug) {
         this.isDebug.set(isDebug);
+    }
+    public Boolean getIsLocalTest() {
+        return isLocalTest.get() != null && isLocalTest.get();
+    }
+
+    public void setIsLocalTest(Boolean isLocalTest) {
+        this.isLocalTest.set(isLocalTest);
     }
 
     public ApiInfo getApiInfo() {
@@ -63,13 +70,6 @@ public class ApiInfoContent {
     public void setApiExecuteEnvironmentEnum(ApiExecuteEnvironmentEnum apiExecuteEnvironmentEnum) {
         this.apiExecuteEnvironmentEnum.set(apiExecuteEnvironmentEnum);
     }
-//    public OpenApiScriptsRelease getApiScript() {
-//        return apiScript.get();
-//    }
-//
-//    public void setApiScript(OpenApiScriptsRelease apiScript) {
-//        this.apiScript.set(apiScript);
-//    }
 
     public Map getRequestParams() {
         return requestParams.get();

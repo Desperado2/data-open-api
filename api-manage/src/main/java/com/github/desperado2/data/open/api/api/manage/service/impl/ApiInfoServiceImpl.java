@@ -99,6 +99,7 @@ public class ApiInfoServiceImpl implements IApiInfoService {
                         .script(openApiScriptsRelease.getApiScript())
                         .responseFormat(ApiCustomResponseStructureEnum.OPEN.getCode().equals(customResultStructure) ?
                                 JSON.parseObject(openApiScriptsRelease.getApiResponseFormat()): null)
+                        .optionData(JSON.parseObject(openApiScriptsRelease.getApiOption()))
                         .build();
                 newOldApiInfoList.add(new NewOldApiInfo(detail.getApiId(), apiInfo, null));
             }

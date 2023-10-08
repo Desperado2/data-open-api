@@ -93,6 +93,7 @@ public class OpenApiScriptsReleaseServiceImpl extends ServiceImpl<OpenApiScripts
                 .prodDatasource(openApiScripts.getProdDatasourceCode())
                 .responseFormat(ApiCustomResponseStructureEnum.OPEN.getCode().equals(customResultStructure) ?
                 JSON.parseObject(openApiScripts.getApiResponseFormat()): null)
+                .optionData(JSON.parseObject(openApiScripts.getApiOption()))
                 .build();
         apiInfoCache.put(apiInfo);
         requestMappingService.registerMappingForApiInfo(apiInfo);

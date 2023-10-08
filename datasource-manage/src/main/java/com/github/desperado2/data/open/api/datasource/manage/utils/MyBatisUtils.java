@@ -26,4 +26,8 @@ public class MyBatisUtils {
         }
         return parameterList;
     }
+
+    public static String getCountSQL(String sql){
+        return "SELECT COUNT(1) t FROM (" + sql +") t";
+    }
 }
